@@ -1,0 +1,119 @@
+create database foxfinance_db;
+use foxfinance_db;
+
+select * from usuarios;
+select * from categorias;
+select * from gastos;
+select * from receita;
+
+drop database foxfinance_db;
+use foxfinance_db;
+
+create table if not exists usuarios (
+id_usuario int NOT NULL auto_increment,
+email varchar(45),
+objetivo enum('Poupar', 'Estabilidade', 'Quitar Dívidas'),
+nome varchar(45),
+senha int,
+PRIMARY KEY (id_usuario)
+);
+
+create table if not exists receita (
+id_receita int NOT NULL auto_increment,
+renda decimal(8,2),
+receita_usuarios int,
+FOREIGN KEY (receita_usuarios) References usuarios (id_usuario),
+PRIMARY KEY (id_receita)
+);
+
+create table if not exists categorias (
+id_categoria int NOT NULL auto_increment,
+tipo varchar(45),
+PRIMARY KEY (id_categoria)
+);
+
+
+create table if not exists gastos (
+id_gastos int NOT NULL auto_increment,
+usuario_gastos int,
+categorias_gastos int,
+valor decimal(8,2),
+tipo_gastos varchar(45),
+dataa date,
+FOREIGN KEY (usuario_gastos) References usuarios (id_usuario),
+FOREIGN KEY (categorias_gastos) References categorias (id_categoria),
+PRIMARY KEY (id_gastos)
+);
+
+-- INSERT
+select * from usuarios;
+ -- Usuario
+insert into usuarios (email, objetivo, nome, senha) values ('paola@gmail', 'Poupar', 'Paola', '123456');
+insert into usuarios (email, objetivo, nome, senha) values ('gulia@gmail', 'Poupar', 'Gulia', '123456');
+insert into usuarios (email, objetivo, nome, senha) values ('luana@gmail', 'Poupar', 'Luana', '123456');
+insert into usuarios (email, objetivo, nome, senha) values ('giovanna@gmail', 'Poupar', 'Giovanna', '123456');
+insert into usuarios (email, objetivo, nome, senha) values ('manu@gmail', 'Poupar', 'Manu', '123456');
+insert into usuarios (email, objetivo, nome, senha) values ('giulia@gmail', 'Poupar', 'Giulia', '123456');
+
+select * from categoria;
+-- Categoria  
+insert into categorias (tipo) values ('Pessoal');
+insert into categorias (tipo) values ('Transporte');
+insert into categorias (tipo) values ('Lazer');
+insert into categorias (tipo) values ('Compras');
+insert into categorias (tipo) values ('Educação');
+insert into categorias (tipo) values ('Saúde');
+insert into categorias (tipo) values ('Alimentação');
+insert into categorias (tipo) values ('Casa');
+insert into categorias (tipo) values ('Outros');
+
+select * from receita;
+-- Receita
+insert into receita (renda, receita_usuarios) value ('1500.50', 1);
+insert into receita (renda, receita_usuarios) value ('25500.50', 2);
+insert into receita (renda, receita_usuarios) value ('4500.50', 3);
+insert into receita (renda, receita_usuarios) value ('5500.50', 4);
+insert into receita (renda, receita_usuarios) value ('6500.50', 5);
+insert into receita (renda, receita_usuarios) value ('7500.50', 6);
+
+select * from gastos;
+-- Gastos
+insert into gastos (valor, dataa, tipo_gastos, usuario_gastos, categorias_gastos) values ('15.90', '2024-06-22', 'Creme hidratante', 1 , 7);
+insert into gastos (valor, dataa, tipo_gastos, usuario_gastos, categorias_gastos) values ('15.90', '2024-06-22', 'Remédio', 1 , 6);
+
+insert into gastos (valor, dataa, tipo_gastos, usuario_gastos, categorias_gastos) values ('75.90', '2024-08-22', 'Seguro do carro', 2, 4);
+insert into gastos (valor, dataa, tipo_gastos, usuario_gastos, categorias_gastos) values ('125.90', '2023-06-02', 'Cinema', 3, 3);
+insert into gastos (valor, dataa, tipo_gastos, usuario_gastos, categorias_gastos) values ('975.90', '2024-02-15', 'Compra alimentícia', 4, 5);
+insert into gastos (valor, dataa, tipo_gastos, usuario_gastos, categorias_gastos) values ('557.90', '2024-12-12', 'Curso de idioma', 5, 7);
+insert into gastos (valor, dataa, tipo_gastos, usuario_gastos, categorias_gastos) values ('25.90', '2024-06-22', 'Remédios', 6, 1);
+
+drop table receita;
+drop table gastos;
+
+select * from usuarios;
+select * from categorias;
+select * from receita;
+
+select * from gastos where usuario_gastos =1;
+
+-- INFORMAÇÃO DE TRÊS TABELAS DIFERENTES
+create view foxFinance as
+select u.nome as "nome",
+       u.objetivo as "objetivo",
+       u.id_usuario,
+	   r.renda as "renda",
+       g.tipo_gastos as "tipo",
+       g.valor as "valor",
+       g.dataa as "data"
+/* u= usuario; r=receita; c=categorias; g=gastos */
+from usuarios u 
+join receita r on u.id_usuario = r.receita_usuarios
+join gastos g on u.id_usuario = g.usuario_gastos;
+
+select * from foxFinance;
+
+SELECT * FROM receita WHERE receita_usuarios = 1;
+
+DELETE FROM Receita r WHERE r.receita_usuarios is null;
+
+
